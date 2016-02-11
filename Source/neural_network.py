@@ -64,7 +64,7 @@ class NeuralNework:
 	def feed_forward(self,X):
 		# output of input layer fed with input values
 		self.a1 = sigmoid(np.dot(X,self.W1)+self.b1)
-		print a1
+		print self.a1
 		# output of hidden layer fed with output of input layer
 		self.y = sigmoid(np.dot(self.a1,self.W2)+self.b2)	
 
