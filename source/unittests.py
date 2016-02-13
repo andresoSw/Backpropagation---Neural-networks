@@ -34,7 +34,6 @@ class NeuralNetworkTest(unittest.TestCase):
 		estimationError = EstimationError(estimatedValues=estimation,targetValues=target)
 		estimationError.computeErrors()
 		totalError = estimationError.getTotalError()
-		print totalError
 		self.assertTrue(totalError<=self.acceptanceEpsilon)
 
 	def testOR(self):
