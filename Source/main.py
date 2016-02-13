@@ -6,14 +6,14 @@ if __name__ == '__main__':
 	np.random.seed(seed=1) #using fixed seed for testing purposes
 
 	x = np.array([[0,0],
-				  [0,1],
-				  [1,0],
-				  [1,1]])
+		      [0,1],
+		      [1,0],
+		      [1,1]])
 
 	target = np.array([[0]
-					  ,[1]
-					  ,[1]
-					  ,[0]])
+			  ,[1]
+			  ,[1]
+			  ,[0]])
 
 	neuralNetwork = NeuralNetwork(0.7,2,8,1)
 
