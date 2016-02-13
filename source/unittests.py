@@ -14,6 +14,7 @@ class NeuralNetworkTest(unittest.TestCase):
 		del self.neuralNetwork
 		del self.acceptanceEpsilon
 		del self.seed
+		del self.maxIterations
 
 	def retrieveEstimationError(self,x,target):
 
