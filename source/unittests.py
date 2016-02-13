@@ -15,7 +15,7 @@ class NeuralNetworkTest(unittest.TestCase):
 		del self.acceptanceEpsilon
 		del self.seed
 
-	def retrieveError(self,x,target):
+	def retrieveEstimationError(self,x,target):
 
 		#setting number of inputs and number of outputs in the neural network
 		_ , xColumns = x.shape
@@ -46,7 +46,7 @@ class NeuralNetworkTest(unittest.TestCase):
 			  ,[1]
 			  ,[0]])
 
-		totalError = self.retrieveError(x,target)
+		totalError = self.retrieveEstimationError(x,target)
 		self.assertTrue(totalError<=self.acceptanceEpsilon)
 
 	def testOR(self):
@@ -60,7 +60,7 @@ class NeuralNetworkTest(unittest.TestCase):
 			  ,[1]
 			  ,[1]])
 
-		totalError = self.retrieveError(x,target)
+		totalError = self.retrieveEstimationError(x,target)
 		self.assertTrue(totalError<=self.acceptanceEpsilon)
 
 	def testAND(self):
@@ -74,7 +74,7 @@ class NeuralNetworkTest(unittest.TestCase):
 			  ,[0]
 			  ,[1]])
 
-		totalError = self.retrieveError(x,target)
+		totalError = self.retrieveEstimationError(x,target)
 		self.assertTrue(totalError<=self.acceptanceEpsilon)
 
 	#test (x1 or x2) and x3
@@ -97,7 +97,7 @@ class NeuralNetworkTest(unittest.TestCase):
 			  ,[1]
 			  ,[1]])
 
-		totalError = self.retrieveError(x,target)
+		totalError = self.retrieveEstimationError(x,target)
 		self.assertTrue(totalError<=self.acceptanceEpsilon)
 
 		#test (x1 and x2) or x3
@@ -120,7 +120,7 @@ class NeuralNetworkTest(unittest.TestCase):
 			  ,[1]
 			  ,[1]])
 
-		totalError = self.retrieveError(x,target)
+		totalError = self.retrieveEstimationError(x,target)
 		self.assertTrue(totalError<=self.acceptanceEpsilon)
 
 def main():
