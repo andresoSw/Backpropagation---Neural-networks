@@ -6,7 +6,7 @@ class NeuralNetworkTest(unittest.TestCase):
 
 	def setUp(self):
 		self.neuralNetwork = NeuralNetwork(eta=0.7,n_in=2,n_hidden=8,n_out=1)
-		self.acceptanceEpsilon = 0.09
+		self.acceptanceEpsilon = 0.08
 		self.seed = 1
 		self.maxIterations = 10000
 
