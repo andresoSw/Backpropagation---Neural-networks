@@ -36,6 +36,28 @@ class NeuralNetworkTest(unittest.TestCase):
 		totalError = estimationError.getTotalError()
 		self.assertTrue(totalError<=self.acceptanceEpsilon)
 
+	def testOR(self):
+		numpy.random.seed(seed=self.seed)
+		x = numpy.array([[0,0],
+		      [0,1],
+		      [1,0],
+		      [1,1]])
+		target = numpy.array([[0]
+			  ,[1]
+			  ,[1]
+			  ,[1]])
+
+		self.neuralNetwork.backpropagation(x,target,maxIterations=self.maxIterations)
+
+		# Network result after training
+		estimation = self.neuralNetwork.feed_forward(x)
+
+		estimationError = EstimationError(estimatedValues=estimation,targetValues=target)
+		estimationError.computeErrors()
+		totalError = estimationError.getTotalError()
+
+		self.assertTrue(totalError<=self.acceptanceEpsilon)
+
 def main():
 	unittest.main()
 
