@@ -15,7 +15,7 @@ if __name__ == '__main__':
 			  ,[1]
 			  ,[0]])
 
-	neuralNetwork = NeuralNetwork(0.7,2,8,1)
+	neuralNetwork = NeuralNetwork(0.7,2,14,1)
 
 	neuralNetwork.backpropagation(x,target,maxIterations=10000)
 
