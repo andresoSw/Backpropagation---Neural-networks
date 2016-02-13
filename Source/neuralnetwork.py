@@ -70,25 +70,25 @@ class NeuralNetwork:
 		self.W1 += self.eta*X.T.dot(hidden_delta)
 
 	# backpropagation for a number of N iteration
-	def backpropagation(self,X,T,N, batch = True):
+	def backpropagation(self,X,T,maxIterations, batch = True):
 		if batch: 
-			for i in range(0,N):
+			for i in range(0,maxIterations):
 				self.backpropagate_batch(X,T)
 		else:
-			for i in range(0,N):
+			for i in range(0,maxIterations):
 				self.backpropagate(X,T)
 
+class EstimationError:
 
-if __name__ == '__main__':
-	
-	np.random.seed(1)
+	def __init__(self,estimatedValues,targetValues,errors=[]):
+		assert (isinstance(estimatedValues,np.ndarray) and isinstance(targetValues,np.ndarray)),"expected numpy ndarray as input,got %s and %s instead" %(type(estimatedValues),type(targetValues))
 
-	x = np.array([[0,0],[0,1],[1,0],[1,1]])
-	y = np.array([[0],[1],[1],[0]])
+		self.estimatedValues = estimatedValues
+		self.targetValues = targetValues
+		self.errors = errors
 
-	nn = NeuralNetwork(0.7,2,8,1)
-	# Train network with a given number of iterations
-	nn.backpropagation(x,y,10000)
+	def computeErrors(self):
+		self.errors = np.absolute(self.targetValues - self.estimatedValues)
 
-	# Network result after training
-	print nn.feed_forward(x)
+	def getTotalError(self):
+		return sum(self.errors)
