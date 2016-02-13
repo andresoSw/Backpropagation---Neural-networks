@@ -1,21 +1,32 @@
-import numpy as np
+import numpy as numpy
 from neuralnetwork import NeuralNetwork,EstimationError
 
 if __name__ == '__main__':
 
-	np.random.seed(seed=1) #using fixed seed for testing purposes
+	numpy.random.seed(seed=1) #using fixed seed for testing purposes
 
-	x = np.array([[0,0],
-		      [0,1],
-		      [1,0],
-		      [1,1]])
-
-	target = np.array([[0]
+	#test (x1 or x2) and x3
+	x = numpy.array([[0,0,0],
+		      [0,0,1],
+		      [0,1,0],
+		      [1,0,0],
+		      [0,1,1],
+		      [1,1,0],
+		      [1,0,1],
+		      [1,1,1]])
+	target = numpy.array([[0]
+			  ,[0]
+			  ,[0]
+			  ,[0]
 			  ,[1]
+			  ,[0]
 			  ,[1]
-			  ,[0]])
+			  ,[1]])
 
-	neuralNetwork = NeuralNetwork(0.7,2,14,1)
+	_ , xColumns = x.shape
+	_ , targetColumns = target.shape
+	neuralNetwork = NeuralNetwork(learning_rate=0.7,n_in=xColumns,n_hidden=14,n_out=targetColumns)
+	neuralNetwork.initialize_weights()
 
 	neuralNetwork.backpropagation(x,target,maxIterations=10000)
 

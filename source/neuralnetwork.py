@@ -8,14 +8,11 @@ def sigmoid_derivate(x):
 
 class NeuralNetwork:
 
-	def __init__(self,eta,n_in,n_hidden,n_out):
-		# learning factor
-		self.eta = eta
+	def __init__(self,learning_rate=0,n_in=0,n_hidden=0,n_out=0):
+		self.learning_rate = learning_rate
 		self.n_in = n_in
 		self.n_hidden = n_hidden
 		self.n_out = n_out
-
-		self.initialize_weights()
 
 	def initialize_weights(self):
 		# Weights from input unit to hidden unit
@@ -51,8 +48,8 @@ class NeuralNetwork:
 			hidden_error = output_delta.dot(self.W2.T)
 			hidden_delta = hidden_error*sigmoid_derivate(self.a1)
 
-			self.W2 += self.eta*self.a1.T.dot(output_delta)
-			self.W1 += self.eta*x.T.dot(hidden_delta)
+			self.W2 += self.learning_rate*self.a1.T.dot(output_delta)
+			self.W1 += self.learning_rate*x.T.dot(hidden_delta)
 
 	# backpropagation updating weights with all examples
 	def backpropagate_batch(self,X,T):
@@ -66,8 +63,8 @@ class NeuralNetwork:
 		hidden_delta = hidden_error*sigmoid_derivate(self.a1)
 
 		# updating weigths
-		self.W2 += self.eta*self.a1.T.dot(output_delta)
-		self.W1 += self.eta*X.T.dot(hidden_delta)
+		self.W2 += self.learning_rate*self.a1.T.dot(output_delta)
+		self.W1 += self.learning_rate*X.T.dot(hidden_delta)
 
 	# backpropagation for a number of N iteration
 	def backpropagation(self,X,T,maxIterations, batch = True):
