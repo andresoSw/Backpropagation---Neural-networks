@@ -6,7 +6,7 @@ def sigmoid(x):
 def sigmoid_derivate(x):
 	return x*(1.0-x)
 
-class NeuralNework:
+class NeuralNetwork:
 
 	def __init__(self,eta,n_in,n_hidden,n_out):
 		# learning factor
@@ -21,12 +21,14 @@ class NeuralNework:
 		# Weights from input unit to hidden unit
 		self.W1 = (0.1)*np.random.random((self.n_in,self.n_hidden))-0.5
 		# Activation threshold on hidden layer
-		self.hidden_threshold = (0.1)*np.random.random((self.n_hidden,1))-0.5
+		# To be used
+		self.hidden_threshold = (0.1)*np.random.random((1,self.n_hidden))-0.5
 
 		# Weights from hidden unit to output unit
 		self.W2 = (0.1)*np.random.random((self.n_hidden,self.n_out))-0.5
-		# Activation threshold on output layer
-		self.output_threshold = (0.1)*np.random.random((self.n_out,1))-0.5
+		# Activation threshold on output layer 
+		# To be used
+		self.output_threshold = (0.1)*np.random.random((1,self.n_out))-0.5
 
 
 	def feed_forward(self,X):
@@ -54,7 +56,6 @@ class NeuralNework:
 
 	# backpropagation updating weights with all examples
 	def backpropagate_batch(self,X,T):
-
 		self.feed_forward(X)
 		# error in output layer
 		output_error = T - self.y
@@ -69,9 +70,14 @@ class NeuralNework:
 		self.W1 += self.eta*X.T.dot(hidden_delta)
 
 	# backpropagation for a number of N iteration
-	def backpropagation(self,X,T,N):
-		for i in range(0,N):
-			self.backpropagate_batch(X,T)
+	def backpropagation(self,X,T,N, batch = True):
+		if batch: 
+			for i in range(0,N):
+				self.backpropagate_batch(X,T)
+		else:
+			for i in range(0,N):
+				self.backpropagate(X,T)
+
 
 if __name__ == '__main__':
 	
@@ -80,7 +86,7 @@ if __name__ == '__main__':
 	x = np.array([[0,0],[0,1],[1,0],[1,1]])
 	y = np.array([[0],[1],[1],[0]])
 
-	nn = NeuralNework(0.7,2,8,1)
+	nn = NeuralNetwork(0.7,2,8,1)
 	# Train network with a given number of iterations
 	nn.backpropagation(x,y,10000)
 
