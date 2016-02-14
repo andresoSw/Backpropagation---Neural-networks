@@ -3,12 +3,24 @@ import numpy as np
 def sigmoid(x):
 	return 1.0/(1.0 + np.exp(-x))
 
-def sigmoid_derivate(x):
+def sigmoid_derivative(x):
 	return x*(1.0-x)
+
+def tanh(x):
+    return np.tanh(x)
+
+def tanh_derivative(x):
+    return 1.0 - x*x
 
 class NeuralNetwork:
 
-	def __init__(self,learning_rate=0,n_in=0,n_hidden=0,n_out=0):
+	def __init__(self,learning_rate=0,n_in=0,n_hidden=0,n_out=0, activation='sigmoid'):
+		if activation == 'sigmoid':
+			self.activation = sigmoid
+			self.activation_derivative = sigmoid_derivative
+		elif activation == 'tanh':
+			self.activation = tanh
+			self.activation_derivative = tanh_derivative
 		self.learning_rate = learning_rate
 		self.n_in = n_in
 		self.n_hidden = n_hidden
@@ -28,14 +40,14 @@ class NeuralNetwork:
 		self.input_units = np.column_stack((X,input_bias))
 
 		# output of input layer fed with input values
-		self.a1 = sigmoid(np.dot(self.input_units,self.W1))
+		self.a1 = self.activation(np.dot(self.input_units,self.W1))
 
 		# Add bias to output unit
 		output_bias = np.ones((len(X),1))
 		self.output_units = np.column_stack((self.a1,output_bias))
 
 		# output of hidden layer fed with output of input layer
-		self.y = sigmoid(np.dot(self.output_units,self.W2))
+		self.y = self.activation(np.dot(self.output_units,self.W2))
 		return self.y
 
 	# backpropagation updating weights with a single example
@@ -46,12 +58,13 @@ class NeuralNetwork:
 			self.feed_forward(x)
 
 			output_error = t - self.y
-			output_delta = output_error*sigmoid_derivate(self.y)
+			output_delta = output_error*self.activation_derivative(self.y)
 
 			# error in hidden layer
 			hidden_error = output_delta.dot(self.W2.T)
-			hidden_delta = hidden_error*sigmoid_derivate(self.output_units)
+			hidden_delta = hidden_error*self.activation_derivative(self.output_units)
 
+			# update weights
 			self.W2 += self.learning_rate*self.output_units.T.dot(output_delta)
 			self.W1 += self.learning_rate*self.input_units.T.dot(hidden_delta)[...,:-1]
 
@@ -61,11 +74,11 @@ class NeuralNetwork:
 		self.feed_forward(X)
 		# error in output layer
 		output_error = T - self.y
-		output_delta = output_error*sigmoid_derivate(self.y)
+		output_delta = output_error*self.activation_derivative(self.y)
 
 		# error in hidden layer
 		hidden_error = output_delta.dot(self.W2.T)
-		hidden_delta = hidden_error*sigmoid_derivate(self.output_units)
+		hidden_delta = hidden_error*self.activation_derivative(self.output_units)
 
 		self.W2 += self.learning_rate*self.output_units.T.dot(output_delta)
 		self.W1 += self.learning_rate*self.input_units.T.dot(hidden_delta)[...,:-1]

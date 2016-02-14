@@ -26,10 +26,10 @@ if __name__ == '__main__':
 	#setting number of inputs and number of outputs in the neural network
 	_ , xColumns = x.shape
 	_ , targetColumns = target.shape
-	neuralNetwork = NeuralNetwork(learning_rate=0.7,n_in=xColumns,n_hidden=4,n_out=targetColumns)
+	neuralNetwork = NeuralNetwork(learning_rate=0.1,n_in=xColumns,n_hidden=4,n_out=targetColumns,activation='tanh')
 
 	neuralNetwork.initialize_weights()
-	neuralNetwork.backpropagation(x,target,maxIterations=10000)
+	neuralNetwork.backpropagation(x,target,maxIterations=10000, batch=True)
 
 	# Network result after training
 	estimation = neuralNetwork .feed_forward(x)
