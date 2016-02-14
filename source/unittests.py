@@ -5,7 +5,7 @@ from neuralnetwork import NeuralNetwork,EstimationError
 class NeuralNetworkTest(unittest.TestCase):
 
 	def setUp(self):
-		self.neuralNetwork = NeuralNetwork(learning_rate=0.7,n_hidden=14)
+		self.neuralNetwork = NeuralNetwork(learning_rate=0.7,n_hidden=4)
 		self.acceptanceEpsilon = 0.063
 		self.seed = 1
 		self.maxIterations = 11000

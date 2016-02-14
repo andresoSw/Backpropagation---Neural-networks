@@ -16,24 +16,27 @@ class NeuralNetwork:
 
 	def initialize_weights(self):
 		# Weights from input unit to hidden unit
-		self.W1 = (0.1)*np.random.random((self.n_in,self.n_hidden))-0.5
-		# Activation threshold on hidden layer
-		# To be used
-		self.hidden_threshold = (0.1)*np.random.random((1,self.n_hidden))-0.5
+		self.W1 = (0.1)*np.random.random((self.n_in+1,self.n_hidden))-0.5
 
 		# Weights from hidden unit to output unit
-		self.W2 = (0.1)*np.random.random((self.n_hidden,self.n_out))-0.5
-		# Activation threshold on output layer 
-		# To be used
-		self.output_threshold = (0.1)*np.random.random((1,self.n_out))-0.5
+		self.W2 = (0.1)*np.random.random((self.n_hidden+1,self.n_out))-0.5
 
 
 	def feed_forward(self,X):
+		# Add bias to input unit
+		input_bias = np.ones((len(X),1))
+		self.input_units = np.column_stack((X,input_bias))
+
 		# output of input layer fed with input values
-		self.a1 = sigmoid(np.dot(X,self.W1))
+		self.a1 = sigmoid(np.dot(self.input_units,self.W1))
+
+		# Add bias to output unit
+		output_bias = np.ones((len(X),1))
+		self.output_units = np.column_stack((self.a1,output_bias))
+
 		# output of hidden layer fed with output of input layer
-		self.y = sigmoid(np.dot(self.a1,self.W2))		
-		return self.y	
+		self.y = sigmoid(np.dot(self.output_units,self.W2))
+		return self.y
 
 	# backpropagation updating weights with a single example
 	def backpropagate(self,X,T):
@@ -45,11 +48,13 @@ class NeuralNetwork:
 			output_error = t - self.y
 			output_delta = output_error*sigmoid_derivate(self.y)
 
+			# error in hidden layer
 			hidden_error = output_delta.dot(self.W2.T)
-			hidden_delta = hidden_error*sigmoid_derivate(self.a1)
+			hidden_delta = hidden_error*sigmoid_derivate(self.output_units)
 
-			self.W2 += self.learning_rate*self.a1.T.dot(output_delta)
-			self.W1 += self.learning_rate*x.T.dot(hidden_delta)
+			self.W2 += self.learning_rate*self.output_units.T.dot(output_delta)
+			self.W1 += self.learning_rate*self.input_units.T.dot(hidden_delta)[...,:-1]
+
 
 	# backpropagation updating weights with all examples
 	def backpropagate_batch(self,X,T):
@@ -60,11 +65,10 @@ class NeuralNetwork:
 
 		# error in hidden layer
 		hidden_error = output_delta.dot(self.W2.T)
-		hidden_delta = hidden_error*sigmoid_derivate(self.a1)
+		hidden_delta = hidden_error*sigmoid_derivate(self.output_units)
 
-		# updating weigths
-		self.W2 += self.learning_rate*self.a1.T.dot(output_delta)
-		self.W1 += self.learning_rate*X.T.dot(hidden_delta)
+		self.W2 += self.learning_rate*self.output_units.T.dot(output_delta)
+		self.W1 += self.learning_rate*self.input_units.T.dot(hidden_delta)[...,:-1]
 
 	# backpropagation for a number of N iteration
 	def backpropagation(self,X,T,maxIterations, batch = True):
