@@ -40,7 +40,7 @@ for index,file_name in enumerate(listdir(datasets_dir)):
 	estimationError = EstimationError(estimatedValues=estimation,targetValues=target)
 	estimationError.computeErrors()
 	totalError = estimationError.getTotalError()
-	results_file = ''.join(['results_',file_name])
+	results_file = ''.join(['results_',file_name.rsplit('.', 1)[0]]+['.out'])
 	print "Writing results in file: %s" %(results_file)
 	with open(results_file,'w+') as results_data:
 		results_data.write("Estimated values:")
