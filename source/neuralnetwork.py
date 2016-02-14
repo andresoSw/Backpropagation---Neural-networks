@@ -14,7 +14,7 @@ def tanh_derivative(x):
 
 class NeuralNetwork:
 
-	def __init__(self,learning_rate=0,n_in=0,n_hidden=0,n_out=0, activation='sigmoid'):
+	def __init__(self,learning_rate=0,n_in=0,n_hidden=0,n_out=0, activation='sigmoid', momentum=0):
 		if activation == 'sigmoid':
 			self.activation = sigmoid
 			self.activation_derivative = sigmoid_derivative
@@ -25,13 +25,15 @@ class NeuralNetwork:
 		self.n_in = n_in
 		self.n_hidden = n_hidden
 		self.n_out = n_out
+		self.momentum = momentum
 
 	def initialize_weights(self):
 		# Weights from input unit to hidden unit
 		self.W1 = (0.1)*np.random.random((self.n_in+1,self.n_hidden))-0.5
-
+		self.W1_delta = np.zeros((self.n_in+1,self.n_hidden))
 		# Weights from hidden unit to output unit
 		self.W2 = (0.1)*np.random.random((self.n_hidden+1,self.n_out))-0.5
+		self.W2_delta = np.zeros((self.n_hidden+1,self.n_out))
 
 
 	def feed_forward(self,X):
@@ -80,8 +82,11 @@ class NeuralNetwork:
 		hidden_error = output_delta.dot(self.W2.T)
 		hidden_delta = hidden_error*self.activation_derivative(self.output_units)
 
-		self.W2 += self.learning_rate*self.output_units.T.dot(output_delta)
-		self.W1 += self.learning_rate*self.input_units.T.dot(hidden_delta)[...,:-1]
+		self.W2_delta = self.learning_rate*self.output_units.T.dot(output_delta) + self.momentum*self.W2_delta 
+		self.W2 = self.W2 + self.W2_delta
+
+		self.W1_delta = self.learning_rate*self.input_units.T.dot(hidden_delta)[...,:-1] + self.momentum*self.W1_delta 
+		self.W1 = self.W1 + self.W1_delta
 
 	# backpropagation for a number of N iteration
 	def backpropagation(self,X,T,maxIterations, batch = True):
