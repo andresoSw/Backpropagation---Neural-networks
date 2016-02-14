@@ -22,7 +22,6 @@ for index,file_name in enumerate(listdir(datasets_dir)):
 			x_input.append([x,y])
 			target.append([area])
 
-	#print "x_input:",x_input,"target:",target
 	x_input = numpy.array(x_input)
 	target = numpy.array(target)
 

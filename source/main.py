@@ -26,7 +26,7 @@ if __name__ == '__main__':
 	#setting number of inputs and number of outputs in the neural network
 	_ , xColumns = x.shape
 	_ , targetColumns = target.shape
-	neuralNetwork = NeuralNetwork(learning_rate=0.7,n_in=xColumns,n_hidden=14,n_out=targetColumns)
+	neuralNetwork = NeuralNetwork(learning_rate=0.7,n_in=xColumns,n_hidden=4,n_out=targetColumns)
 
 	neuralNetwork.initialize_weights()
 	neuralNetwork.backpropagation(x,target,maxIterations=10000)
