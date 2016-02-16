@@ -10,17 +10,22 @@ module NeuralNetwork (
   ignorefirst,
   caseBackpropagation,
   backpropagation,
-  bp
+  bp,
+  fromRandomList
 ) where
 
 import qualified Data.Matrix as A
+import Data.List (foldl')
 
 sigmoid x = 1 / (1 + exp (-1 * x))
 
 addBias :: (Num a) => A.Matrix a -> A.Matrix a
 addBias x = (A.<->) (A.fromList 1 (A.ncols x) (repeat 1)) x
 
-newtype NN a = NN [A.Matrix a] deriving Show
+newtype NN a = NN [A.Matrix a]
+
+instance (Show a) => Show (NN a) where
+  show (NN a) = show $ map (A.toLists) a
 
 -- transforma una lista de lista de lista de numeros a red neural
 fromList list = 
@@ -28,7 +33,7 @@ fromList list =
   NN (map (foldl1 (A.<->)) temp)
 
 solve' :: (Num a, Floating a) => NN a -> A.Matrix a -> A.Matrix a
-solve' (NN net) input = foldl (help) (addBias input) net
+solve' (NN net) input = foldl' (help) (addBias input) net
   where help x y = addBias $ fmap (sigmoid) (y*x)
 
 -- Resuelve una red neural con un input dado
@@ -48,6 +53,11 @@ empty input l = NN $ help input l
   where
     help _ [] = []
     help i (l:lx) = (A.zero l (i+1)):(help l lx)
+
+fromRandomList input l rand = NN $ help input l rand
+  where
+    help _ [] _ = []
+    help i (x:xs) r = (A.fromList x (i+1) r):(help x xs (drop (x+i+1) r))
 
 testToMatrix x =
   let help = map (\(x,y) -> (A.fromList 1 (length x) x, A.fromList 1 (length y) y)) x in
@@ -74,7 +84,7 @@ a <**> b = A.elementwise (*) a b
 
 ignorefirst x = A.submatrix 2 (A.nrows x) 1 1 x
 
-fun hid (d, (x:xs), l) = (A.transpose val,xs,val:l)
+fun hid (d, (x:xs), l) = val:l `seq` (A.transpose val,xs,val:l)
   where
     val = hid<**>(fmap ((-) 1) hid)<**>(ignorefirst $ A.transpose (d*x))
 
@@ -91,20 +101,15 @@ caseBackpropagation tasa net@(NN arr) caso = NN final
     deltaw = map (fmap ((*) tasa)) $ zipWith (*) d (fmap (A.transpose) $ init progre)
     final = zipWith (+) arr deltaw
 
-bp :: (Num a, Floating a) => a -> NN a -> [([a],[a])] -> (NN a -> Bool) -> Int -> NN a
-bp tasa net testCases stopFun iter = backpropagation tasa net cases stopFun iter
+bp :: (Num a, Floating a) => a -> NN a -> [([a],[a])] -> [NN a]
+bp tasa net testCases = cases `seq` backpropagation tasa net cases
   where
     cases = map (\(x,y)->(A.fromList (length x) 1 x, A.fromList (length y) 1 y)) testCases
 
-backpropagation :: (Num a, Floating a) => a -> NN a -> [(A.Matrix a,A.Matrix a)] -> (NN a -> Bool) -> Int -> NN a
-backpropagation tasa net testCases stopFun iter
-  | iter == 0 = myNet
-  | stopFun myNet = myNet
-  | otherwise = backpropagation tasa myNet testCases stopFun (iter-1)
+backpropagation :: (Num a, Floating a) => a -> NN a -> [(A.Matrix a,A.Matrix a)] -> [NN a]
+backpropagation tasa net testCases = net `seq` net:(backpropagation tasa myNet testCases)
   where
-    newNet n [] = n
-    newNet n (x:xs) = newNet (caseBackpropagation tasa n x) xs
-    myNet = newNet net testCases
+    myNet = foldl' (caseBackpropagation tasa) net testCases
 
 
 
