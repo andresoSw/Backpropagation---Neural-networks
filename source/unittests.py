@@ -5,7 +5,7 @@ from neuralnetwork import NeuralNetwork,EstimationError
 class NeuralNetworkTest(unittest.TestCase):
 
 	def setUp(self):
-		self.neuralNetwork = NeuralNetwork(learning_rate=0.7,n_hidden=4)
+		self.neuralNetwork = NeuralNetwork(learning_rate=0.15,n_hidden=2,momentum=0.95,activation='tanh')
 		self.acceptanceEpsilon = 0.05
 		self.seed = 1
 		self.maxIterations = 11000
@@ -47,7 +47,8 @@ class NeuralNetworkTest(unittest.TestCase):
 			  ,[1]
 			  ,[0]])
 
-		totalError = self.retrieveEstimationError(x,target)
+		totalError = self.retrieveEstimationError(x,target)	
+		print 'Error XOR:',totalError
 		self.assertTrue(totalError<=self.acceptanceEpsilon)
 
 	def testOR(self):
@@ -62,6 +63,8 @@ class NeuralNetworkTest(unittest.TestCase):
 			  ,[1]])
 
 		totalError = self.retrieveEstimationError(x,target)
+		print 'Error OR:',totalError
+
 		self.assertTrue(totalError<=self.acceptanceEpsilon)
 
 	def testAND(self):
@@ -76,6 +79,7 @@ class NeuralNetworkTest(unittest.TestCase):
 			  ,[1]])
 
 		totalError = self.retrieveEstimationError(x,target)
+		print 'Error AND:',totalError
 		self.assertTrue(totalError<=self.acceptanceEpsilon)
 
 	#test (x1 or x2) and x3
@@ -99,6 +103,7 @@ class NeuralNetworkTest(unittest.TestCase):
 			  ,[1]])
 
 		totalError = self.retrieveEstimationError(x,target)
+		print 'Error ORAND:',totalError
 		self.assertTrue(totalError<=self.acceptanceEpsilon)
 
 		#test (x1 and x2) or x3
@@ -122,6 +127,7 @@ class NeuralNetworkTest(unittest.TestCase):
 			  ,[1]])
 
 		totalError = self.retrieveEstimationError(x,target)
+		print 'Error ANDOR:',totalError
 		self.assertTrue(totalError<=self.acceptanceEpsilon)
 
 def main():
