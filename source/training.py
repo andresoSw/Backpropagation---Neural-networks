@@ -3,7 +3,7 @@ from os.path import isfile,join
 from neuralnetwork import NeuralNetwork,EstimationError
 import numpy as numpy
 
-datasets_dir = 'datasets'
+datasets_dir = 'datasets/circle'
 for index,file_name in enumerate(listdir(datasets_dir)):
 	print "%s)=============================================================" %(index+1)
 	print "Training network from dataset: %s" %(file_name)
@@ -28,13 +28,10 @@ for index,file_name in enumerate(listdir(datasets_dir)):
 	numpy.random.seed(seed=1) #using fixed seed for testing purposes
 	_ , xColumns = x_input.shape
 	_ , targetColumns = target.shape
-	neuralNetwork = NeuralNetwork(learning_rate=0.7,n_in=xColumns,n_hidden=14,n_out=targetColumns)
+	neuralNetwork = NeuralNetwork(learning_rate=0.3,n_in=xColumns,n_hidden=8,n_out=targetColumns)
 
 	neuralNetwork.initialize_weights()
-	neuralNetwork.backpropagation(x_input,target,maxIterations=10000)
-
-	# Network result after training
-	estimation = neuralNetwork .feed_forward(x_input)
+	neuralNetwork.backpropagation(x_input,target,maxIterations=10000,file_name=file_name)
 
 
 	estimationError = EstimationError(estimatedValues=estimation,targetValues=target)

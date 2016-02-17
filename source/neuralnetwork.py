@@ -89,13 +89,24 @@ class NeuralNetwork:
 		self.W1 = self.W1 + self.W1_delta
 
 	# backpropagation for a number of N iteration
-	def backpropagation(self,X,T,maxIterations, batch = True):
+	def backpropagation(self,X,T,maxIterations,batch = False,file_name=None):
 		if batch: 
 			for i in range(0,maxIterations):
 				self.backpropagate_batch(X,T)
 		else:
 			for i in range(0,maxIterations):
 				self.backpropagate(X,T)
+				estimation = self.y
+				estimationError = EstimationError(estimatedValues=estimation,targetValues=T)
+				estimationError.computeErrors()
+				totalError = estimationError.getTotalError()
+				print i,' ',totalError/len(X)
+				if file_name is not None:
+					results_file = ''.join(['results_',file_name.rsplit('.', 1)[0]]+['.out'])
+					with open(results_file,'w+') as results_data:
+						results_data.write(str(i))
+						results_data.write(',')
+						results_data.write(str(totalError/len(X)))
 
 class EstimationError:
 
@@ -107,7 +118,7 @@ class EstimationError:
 		self.errors = errors
 
 	def computeErrors(self):
-		self.errors = np.absolute(self.targetValues - self.estimatedValues)
+		self.errors = np.power((self.targetValues - self.estimatedValues),2)
 
 	def getTotalError(self):
 		return sum(self.errors)
