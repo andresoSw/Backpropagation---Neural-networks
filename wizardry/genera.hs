@@ -18,5 +18,5 @@ main = do
   (x:_) <- getArgs
   let circle = isInCircle (10,10) 7
   let (yes,nos) = generarPatrones (20,20) (read x) circle g1 g2
-  putStr $ unlines $ map (\(x,y) -> (show x) ++ " " ++ (show y) ++ " -1") yes
-  putStr $ unlines $ map (\(x,y) -> (show x) ++ " " ++ (show y) ++ " 1") nos
+  putStr $ unlines $ map (\(x,y) -> (show x) ++ " " ++ (show y) ++ " 1") yes
+  putStr $ unlines $ map (\(x,y) -> (show x) ++ " " ++ (show y) ++ " -1") nos
