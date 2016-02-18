@@ -96,7 +96,7 @@ class NeuralNetwork:
 		else:
 			for i in range(0,maxIterations):
 				self.backpropagate(X,T)
-				estimation = self.y
+				estimation = self.feed_forward(X)
 				estimationError = EstimationError(estimatedValues=estimation,targetValues=T)
 				estimationError.computeErrors()
 				totalError = estimationError.getTotalError()
