@@ -66,9 +66,11 @@ class NeuralNetwork:
 			hidden_error = output_delta.dot(self.W2.T)
 			hidden_delta = hidden_error*self.activation_derivative(self.output_units)
 
-			# update weights
-			self.W2 += self.learning_rate*self.output_units.T.dot(output_delta)
-			self.W1 += self.learning_rate*self.input_units.T.dot(hidden_delta)[...,:-1]
+			self.W2_delta = self.learning_rate*self.output_units.T.dot(output_delta) + self.momentum*self.W2_delta 
+			self.W2 = self.W2 + self.W2_delta
+
+			self.W1_delta = self.learning_rate*self.input_units.T.dot(hidden_delta)[...,:-1] + self.momentum*self.W1_delta 
+			self.W1 = self.W1 + self.W1_delta
 
 
 	# backpropagation updating weights with all examples
@@ -96,18 +98,19 @@ class NeuralNetwork:
 		else:
 			for i in range(0,maxIterations):
 				self.backpropagate(X,T)
-				estimation = self.feed_forward(X)
-				estimationError = EstimationError(estimatedValues=estimation,targetValues=T)
-				estimationError.computeErrors()
-				totalError = estimationError.getTotalError()
-				print i,' ',totalError/len(X)
-				if file_name is not None:
-					results_file = ''.join([file_name.rsplit('.', 1)[0]]+['.out'])
-					with open(results_file,'a') as results_data:
-						results_data.write(str(i))
-						results_data.write(',')
-						results_data.write((str(totalError/len(X))))
-						results_data.write('\n')
+				if (i%100==0) or (i==maxIterations):
+					estimation = self.feed_forward(X)
+					estimationError = EstimationError(estimatedValues=estimation,targetValues=T)
+					estimationError.computeErrors()
+					totalError = estimationError.getTotalError()
+					print i,' ',totalError/len(X)
+					if file_name is not None:
+						results_file = ''.join([file_name.rsplit('.', 1)[0]]+['.out'])
+						with open(results_file,'a') as results_data:
+							results_data.write(str(i))
+							results_data.write(',')
+							results_data.write((str(totalError/len(X))))
+							results_data.write('\n')
 
 
 class EstimationError:

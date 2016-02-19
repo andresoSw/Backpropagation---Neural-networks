@@ -48,7 +48,7 @@ if __name__ == '__main__':
 	neuralNetwork = NeuralNetwork(learning_rate=0.1,n_in=xColumns,n_hidden=2,n_out=targetColumns,activation='tanh',momentum=0.9)
 
 	neuralNetwork.initialize_weights()
-	neuralNetwork.backpropagation(x,target,maxIterations=100000, batch=False)
+	neuralNetwork.backpropagation(x,target,maxIterations=10000, batch=False)
 
 	# Network result after training
 	estimation = neuralNetwork .feed_forward(x)
