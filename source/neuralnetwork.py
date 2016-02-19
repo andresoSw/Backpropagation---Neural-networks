@@ -95,22 +95,33 @@ class NeuralNetwork:
 		if batch: 
 			for i in range(0,maxIterations):
 				self.backpropagate_batch(X,T)
+				estimation = self.feed_forward(X)
+				estimationError = EstimationError(estimatedValues=estimation,targetValues=T)
+				estimationError.computeErrors()
+				totalError = estimationError.getTotalError()
+				print i,' ',totalError/len(X)
+				if file_name is not None:
+					results_file = ''.join([file_name.rsplit('.', 1)[0]]+['.out'])
+					with open(results_file,'a') as results_data:
+						results_data.write(str(i))
+						results_data.write(',')
+						results_data.write((str(totalError/len(X))))
+						results_data.write('\n')
 		else:
 			for i in range(0,maxIterations):
 				self.backpropagate(X,T)
-				if (i%100==0) or (i==maxIterations):
-					estimation = self.feed_forward(X)
-					estimationError = EstimationError(estimatedValues=estimation,targetValues=T)
-					estimationError.computeErrors()
-					totalError = estimationError.getTotalError()
-					print i,' ',totalError/len(X)
-					if file_name is not None:
-						results_file = ''.join([file_name.rsplit('.', 1)[0]]+['.out'])
-						with open(results_file,'a') as results_data:
-							results_data.write(str(i))
-							results_data.write(',')
-							results_data.write((str(totalError/len(X))))
-							results_data.write('\n')
+				estimation = self.feed_forward(X)
+				estimationError = EstimationError(estimatedValues=estimation,targetValues=T)
+				estimationError.computeErrors()
+				totalError = estimationError.getTotalError()
+				print i,' ',totalError/len(X)
+				if file_name is not None:
+					results_file = ''.join([file_name.rsplit('.', 1)[0]]+['.out'])
+					with open(results_file,'a') as results_data:
+						results_data.write(str(i))
+						results_data.write(',')
+						results_data.write((str(totalError/len(X))))
+						results_data.write('\n')
 
 
 class EstimationError:

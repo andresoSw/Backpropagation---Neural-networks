@@ -29,10 +29,11 @@ for index,file_name in enumerate(listdir(datasets_dir)):
 	numpy.random.seed(seed=1) #using fixed seed for testing purposes
 	_ , xColumns = x_input.shape
 	_ , targetColumns = target.shape
-	n_hidden = 9
-	neuralNetwork = NeuralNetwork(learning_rate=0.01,n_in=xColumns,n_hidden=n_hidden,n_out=targetColumns)
+	n_hidden = 10
+	momentum = 0
+	neuralNetwork = NeuralNetwork(learning_rate=0.01,n_in=xColumns,n_hidden=n_hidden,n_out=targetColumns, momentum = momentum)
 
 	neuralNetwork.initialize_weights()
-	results_file = ''.join(['results_lr',str(neuralNetwork.learning_rate),'_',str(n_hidden),"hidden",file_name.rsplit('.', 1)[0]]+['.out'])
+	results_file = ''.join(['results_lr',str(neuralNetwork.learning_rate),'_m',str(momentum),'_',str(n_hidden),"hidden",file_name.rsplit('.', 1)[0]]+['.out'])
 
-	neuralNetwork.backpropagation(x_input,target,maxIterations=10000,file_name=results_file)
+	neuralNetwork.backpropagation(x_input,target,maxIterations=10000, batch= False,file_name=results_file)
