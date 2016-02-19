@@ -2,6 +2,9 @@ apt-get install haskell-platform
 cabal install random-shuffle-0.0.4
 cabal install Matrix
 ghc randomize.hs
+apt-get install octave
+apt-get install epstool
+apt-get install fig2dev
 use: ./randomize <input.file>
 
 # generacion de n numero de casos
