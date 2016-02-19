@@ -102,11 +102,13 @@ class NeuralNetwork:
 				totalError = estimationError.getTotalError()
 				print i,' ',totalError/len(X)
 				if file_name is not None:
-					results_file = ''.join(['results_',file_name.rsplit('.', 1)[0]]+['.out'])
-					with open(results_file,'w+') as results_data:
+					results_file = ''.join([file_name.rsplit('.', 1)[0]]+['.out'])
+					with open(results_file,'a') as results_data:
 						results_data.write(str(i))
 						results_data.write(',')
-						results_data.write(str(totalError/len(X)))
+						results_data.write((str(totalError/len(X))))
+						results_data.write('\n')
+
 
 class EstimationError:
 

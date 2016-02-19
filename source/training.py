@@ -3,7 +3,7 @@ from os.path import isfile,join
 from neuralnetwork import NeuralNetwork,EstimationError
 import numpy as numpy
 
-datasets_dir = 'datasets/circle'
+datasets_dir = 'testfile'
 for index,file_name in enumerate(listdir(datasets_dir)):
 	print "%s)=============================================================" %(index+1)
 	print "Training network from dataset: %s" %(file_name)
@@ -19,6 +19,7 @@ for index,file_name in enumerate(listdir(datasets_dir)):
 			x = float(x)
 			y = float(y)
 			area = int(area)
+			if area==-1: area = 0
 			x_input.append([x,y])
 			target.append([area])
 
@@ -28,22 +29,10 @@ for index,file_name in enumerate(listdir(datasets_dir)):
 	numpy.random.seed(seed=1) #using fixed seed for testing purposes
 	_ , xColumns = x_input.shape
 	_ , targetColumns = target.shape
-	neuralNetwork = NeuralNetwork(learning_rate=0.3,n_in=xColumns,n_hidden=8,n_out=targetColumns)
+	n_hidden = 9
+	neuralNetwork = NeuralNetwork(learning_rate=0.01,n_in=xColumns,n_hidden=n_hidden,n_out=targetColumns)
 
 	neuralNetwork.initialize_weights()
-	neuralNetwork.backpropagation(x_input,target,maxIterations=10000,file_name=file_name)
+	results_file = ''.join(['results_lr',str(neuralNetwork.learning_rate),'_',str(n_hidden),"hidden",file_name.rsplit('.', 1)[0]]+['.out'])
 
-
-	estimationError = EstimationError(estimatedValues=estimation,targetValues=target)
-	estimationError.computeErrors()
-	totalError = estimationError.getTotalError()
-	results_file = ''.join(['results_',file_name.rsplit('.', 1)[0]]+['.out'])
-	print "Writing results in file: %s" %(results_file)
-	with open(results_file,'w+') as results_data:
-		results_data.write("Estimated values:")
-		results_data.write(str(estimation))
-		results_data.write("----------------")
-		results_data.write("Target values:")
-		results_data.write(str(target))
-		results_data.write("----------------")
-		results_data.write("Total Error: %s" %(totalError))
+	neuralNetwork.backpropagation(x_input,target,maxIterations=10000,file_name=results_file)
