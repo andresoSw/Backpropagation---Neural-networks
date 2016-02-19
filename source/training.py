@@ -2,8 +2,9 @@ from os import listdir
 from os.path import isfile,join
 from neuralnetwork import NeuralNetwork,EstimationError
 import numpy as numpy
+import pickle
 
-datasets_dir = 'testfile'
+datasets_dir = 'train'
 for index,file_name in enumerate(listdir(datasets_dir)):
 	print "%s)=============================================================" %(index+1)
 	print "Training network from dataset: %s" %(file_name)
@@ -29,7 +30,7 @@ for index,file_name in enumerate(listdir(datasets_dir)):
 	numpy.random.seed(seed=1) #using fixed seed for testing purposes
 	_ , xColumns = x_input.shape
 	_ , targetColumns = target.shape
-	n_hidden = 10
+	n_hidden = 8
 	momentum = 0
 	neuralNetwork = NeuralNetwork(learning_rate=0.01,n_in=xColumns,n_hidden=n_hidden,n_out=targetColumns, momentum = momentum)
 
@@ -37,3 +38,10 @@ for index,file_name in enumerate(listdir(datasets_dir)):
 	results_file = ''.join(['results_lr',str(neuralNetwork.learning_rate),'_m',str(momentum),'_',str(n_hidden),"hidden",file_name.rsplit('.', 1)[0]]+['.out'])
 
 	neuralNetwork.backpropagation(x_input,target,maxIterations=10000, batch= False,file_name=results_file)
+	network_file = ''.join(['trained_lr',str(neuralNetwork.learning_rate),'_m',str(momentum),'_',str(n_hidden),"hidden",file_name.rsplit('.', 1)[0]]+['.nn'])
+	pickle.dump(neuralNetwork, file(network_file,'wb'))
+
+	print neuralNetwork.feed_forward(x_input)
+	nn2 = pickle.load(file(network_file,'rb'))
+	print network_file
+	print nn2.feed_forward(x_input)
